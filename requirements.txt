@@ -3,3 +3,4 @@ pandas
 plotly
 numpay
 numpay_financial
+gunicorn
