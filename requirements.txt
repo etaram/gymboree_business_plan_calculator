@@ -1,6 +1,6 @@
 streamlit
 pandas
 plotly
-numpay
+numpay==1.26.2
 numpay_financial
 gunicorn
