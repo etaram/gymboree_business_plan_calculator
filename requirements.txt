@@ -1,6 +1,7 @@
-streamlit
-pandas
-plotly
-numpay==1.26.2
-numpay_financial
-gunicorn
+dash==2.11.0
+dash-bootstrap-components==1.0.0
+pandas==1.5.0
+numpy==1.21.0
+numpy-financial==1.0.0
+plotly==5.4.0
+gunicorn==20.1.0
