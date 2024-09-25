@@ -1,16 +1,19 @@
+import streamlit as st
+import pandas as pd
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
 from unittest import result
 import dash
 import dash_bootstrap_components as dbc
 from dash import dcc, html, Input, Output, State, ALL
-import pandas as pd
-import numpy as np
-import numpy_financial as npf
-import plotly.express as px
-import plotly.graph_objects as go
 import locale
 import io
 from dash.exceptions import PreventUpdate
 
+def main():
+    st.set_page_config(page_title="מחשבון תוכנית עסקית לג'ימבורי יובל המבולבל", layout="wide")
+    st.title("מחשבון תוכנית עסקית לג'ימבורי יובל המבולבל")
 # הגדרת לוקאל לאלפי מפרידים
 try:
     locale.setlocale(locale.LC_ALL, 'he_IL.UTF-8')  # ודא שלוקאל זה נתמך במערכת שלך
@@ -279,7 +282,7 @@ def calculate_results(params):
     results = {
         'עלויות הקמה': setup_costs,
         'פחת שנתי (%)': annual_depreciation_percentage,  # הצגת פחת כאחוז
-        'הכנסות שנתיות': total_income,
+        'הכנסו�� שנתיות': total_income,
         'הוצאות משתנות': total_variable_expenses,
         'רווח גולמי': gross_profit,
         'הוצאות קבועות': total_fixed_expenses,
@@ -525,7 +528,7 @@ def render_results_tab(results):
         'נקודת איזון (מספר כרטיסים ליום)': "מספר הכרטיסים שנדרש למכור ביום פתוח כדי לכסות את ההוצאות.",
         'החזר על ההשקעה (ROI)': "החזר על ההשקעה מחושב כאחוז מהרווח לפני מס חלקי עלויות ההקמה.",
         'החזר פנימי (IRR)': "שיעור התשואה הפנימי שמאפשר לנקות את הערך הנוכחי של זרמי המזומנים להשקעה.",
-        'תקופת החזר השקעה (שנים)': "הזמן שנדרש כדי להחזיר את ההשקעה הראשונית מהרווח לפני מס."
+        'תקופת החזר השקעה (שנים)': "ה��מן שנדרש כדי להחזיר את ההשקעה הראשונית מהרווח לפני מס."
     }
 
     # יצירת טבלת המדדים המרכזיים עם הסברים
