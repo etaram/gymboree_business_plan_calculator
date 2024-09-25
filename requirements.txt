@@ -1,5 +1,6 @@
 streamlit
+dash
+dash-bootstrap-components
 pandas
-plotly
-numpay
-numpay_financial
+numpy
+setuptools
