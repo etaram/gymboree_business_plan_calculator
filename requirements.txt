@@ -2,5 +2,5 @@ streamlit
 dash
 dash-bootstrap-components
 pandas
-numpy
+numpy==1.24.0
 setuptools
