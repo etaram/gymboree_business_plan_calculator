@@ -16,6 +16,7 @@ except locale.Error:
 # כותרת האפליקציה
 st.title("מחשבון תוכנית עסקית לג'ימבורי יובל המבולבל")
 
+# הגדרת CSS לעיצוב מותאם אישית
 st.markdown("""
 <style>
     /* סגנון כללי */
@@ -61,7 +62,7 @@ st.markdown("""
     }
 
     button:hover {
-        background-color: #0069d9; /* צבע כחול כהה יותר при наведении курсора */
+        background-color: #0069d9; /* צבע כחול כהה יותר */
     }
 
     /* טבלאות */
@@ -123,6 +124,7 @@ st.markdown("""
         }
     }
 </style>
+""", unsafe_allow_html=True)
 
 # פרמטרים ראשוניים
 default_params = {
@@ -292,7 +294,6 @@ def calculate_category_data(params, income_regular_tickets, income_holiday_ticke
 
     return income_data, expense_data
 
-
 # פונקציה לחישוב התוצאות
 def calculate_results(params):
     """
@@ -394,7 +395,7 @@ def calculate_results(params):
 
     return results
 
-# יצירת שדה קלט (מותאם ל-Streamlit)
+# יצירת קלט לפרמטרים (מותאם ל-Streamlit)
 def create_input_control(key, value):
     if isinstance(value, int):
         formatted_value = f"{locale.format_string('%d', value, grouping=True)}"
@@ -421,7 +422,6 @@ def create_input_control(key, value):
         return st.number_input(f"{key}{suffix}", value=value)
     else:
         return st.text_input(f"{key}{suffix}", value=formatted_value)
-
 
 # הצגת טאב הפרמטרים (מותאם ל-Streamlit)
 def render_parameters_tab():
@@ -464,7 +464,7 @@ def render_parameters_tab():
         results = calculate_results(default_params)
         st.session_state['results'] = results
 
-# פונקציה ליצירת טבלת מדדים
+# יצירת טבלת מדדים עם הסברים
 def generate_metrics_table(metrics, explanations):
     """
     יוצר טבלה של מדדים עם הסברים.
@@ -484,7 +484,7 @@ def generate_metrics_table(metrics, explanations):
 
     return metrics_df
 
-# פונקציה ליצירת טבלת קטגוריות
+# יצירת טבלת קטגוריות עם הסברים
 def generate_category_table(data):
     """
     יוצר טבלה של קטגוריות עם עיצוב אחיד.
@@ -576,7 +576,8 @@ def render_results_tab(results):
     }
 
     financials_table = generate_metrics_table(financials, financials_explanations)
-       # הכנסות והוצאות לפי קטגוריות עם הסברים
+    
+    # הכנסות והוצאות לפי קטגוריות עם הסברים
     income_table = generate_category_table(results['הכנסות לפי קטגוריות'])
     expense_table = generate_category_table(results['הוצאות לפי קטגוריות'])
 
@@ -636,7 +637,6 @@ def render_results_tab(results):
     st.write(expense_table)
     st.markdown("---")
 
-
 # הצגת טאב הגרפים (מותאם ל-Streamlit)
 def render_charts_tab(results):
     """
@@ -644,9 +644,6 @@ def render_charts_tab(results):
 
     Args:
         results (dict): תוצאות החישוב.
-
-    Returns:
-        html.Div: טאב הגרפים.
     """
 
     if not results:
@@ -757,7 +754,6 @@ def render_charts_tab(results):
 
     sensitivity_param_dropdown = st.selectbox("בחר פרמטר לניתוח רגישות:", options=list(default_params.keys()))
 
-
     sensitivity_layout = st.container()
     with sensitivity_layout:
         sensitivity_param_dropdown
@@ -776,7 +772,6 @@ def render_charts_tab(results):
     sensitivity_layout
     advanced_sensitivity_layout
 
-
 # פונקציה לניתוח רגישות מתקדם (הצלבה בין פרמטרים)
 def perform_advanced_sensitivity_analysis(current_params, param1, param2, range1, range2):
     profits = []
@@ -809,7 +804,6 @@ def render_advanced_sensitivity_layout():
     with advanced_sensitivity_info:
         st.write("")  # Placeholder for sensitivity info
 
-
     advanced_sensitivity_layout = st.container()
     with advanced_sensitivity_layout:
         param1
@@ -818,7 +812,6 @@ def render_advanced_sensitivity_layout():
         advanced_sensitivity_info
 
     return advanced_sensitivity_layout
-
 
 # פונקציה לייצוא תוצאות לאקסל
 def generate_excel(results):
@@ -922,321 +915,6 @@ def update_advanced_sensitivity_graph(param1, param2, store_data):
     )
     fig.update_layout(font=dict(size=14))
     return fig
-
-# קולבק להצגת מידע על ניתוח רגישות מתקדם
-def display_sensitivity_info(clickData):
-    if clickData is None:
-        return ""
-    param1_value = clickData['points'][0]['x']
-    param2_value = clickData['points'][0]['y']
-    profit = clickData['points'][0]['z']
-    return f"רווח לפני מס: {locale.format_string('%.2f', profit, grouping=True)} ש״ח"
-
-# פריסת האפליקציה (מותאם ל-Streamlit)
-if 'results' not in st.session_state:
-    render_parameters_tab()
-else:
-    results = st.session_state['results']
-    tab = st.sidebar.radio("בחר טאב:", ("תוצאות", "גרפים"))
-    if tab == "תוצאות":
-        render_results_tab(results)
-
-        # כפתור לייצוא לאקסל
-        if st.button("ייצא לאקסל"):
-            excel_io = generate_excel(results)
-            st.download_button(
-                label="הורדת קובץ אקסל",
-                data=excel_io,
-                file_name="gymboree_business_plan_results.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
-       elif tab == "גרפים":
-        render_charts_tab(results)
-
-# הצגת טאב הגרפים (מותאם ל-Streamlit)
-def render_charts_tab(results):
-    """
-    מציג את טאב הגרפים.
-
-    Args:
-        results (dict): תוצאות החישוב.
-    """
-
-    if not results:
-        st.write("אנא הזן את הפרמטרים ולחץ על 'חשב' כדי לראות את הגרפים.")
-        return
-
-    # גרף מפל
-    waterfall_fig = go.Figure(go.Waterfall(
-        name="",
-        orientation="v",
-        measure=["relative", "relative", "relative", "relative", "total"],
-        x=["הכנסות", "הוצאות משתנות", "הוצאות קבועות", "תשלומי הלוואה", "רווח לפני מס"],
-        textposition="outside",
-        text=[
-            f"{locale.format_string('%.0f', results['הכנסות שנתיות'], grouping=True)} ש״ח",
-            f"-{locale.format_string('%.0f', results['הוצאות משתנות'], grouping=True)} ש״ח",
-            f"-{locale.format_string('%.0f', results['הוצאות קבועות'], grouping=True)} ש״ח",
-            f"-{locale.format_string('%.0f', results['תשלומי הלוואה'], grouping=True)} ש״ח",
-            f"{locale.format_string('%.0f', results['רווח לפני מס'], grouping=True)} ש״ח"
-        ],
-        y=[
-            results['הכנסות שנתיות'],
-            -results['הוצאות משתנות'],
-            -results['הוצאות קבועות'],
-            -results['תשלומי הלוואה'],
-            results['רווח לפני מס']
-        ],
-        connector={"line": {"color": "rgb(63, 63, 63)"}},
-        increasing={"marker": {"color": "#007bff"}},
-        decreasing={"marker": {"color": "#dc3545"}},
-        totals={"marker": {"color": "#28a745"}},
-    ))
-    waterfall_fig.update_layout(
-        title="מפל הכנסות והוצאות",
-        xaxis_title="",
-        yaxis_title="ש״ח",
-        font=dict(size=14),
-        hovermode="x unified"
-    )
-
-    # גרף הכנסות לפי קטגוריות (גרף עוגה)
-    income_df = pd.DataFrame(list(results['הכנסות לפי קטגוריות'].items()), columns=['קטגוריה', 'סכום'])
-    income_pie_fig = px.pie(income_df, values='סכום', names='קטגוריה', title='התפלגות ההכנסות')
-    income_pie_fig.update_traces(marker=dict(colors=['#007bff', '#28a745', '#dc3545', '#28a745', '#dc3545']))
-    income_pie_fig.update_layout(font=dict(size=14))
-
-    # גרף הוצאות לפי קטגוריות (גרף עוגה)
-    expense_df = pd.DataFrame(list(results['הוצאות לפי קטגוריות'].items()), columns=['קטגוריה', 'סכום'])
-    expense_pie_fig = px.pie(expense_df, values='סכום', names='קטגוריה', title='התפלגות ההוצאות')
-    expense_pie_fig.update_layout(font=dict(size=14))
-
-    # גרף נקודת איזון
-    breakeven_total_tickets = results['נקודת איזון (מספר כרטיסים לשנה)']
-    average_ticket_price = results['הכנסות שנתיות'] / (
-            default_params['מספר מבקרים ביום רגיל'] * 191 + default_params['מספר מבקרים ביום חופשה/חג'] * 100) if (
-            default_params['מספר מבקרים ביום רגיל'] * 191 + default_params['מספר מבקרים ביום חופשה/חג'] * 100) != 0 else 0
-
-    quantity = np.linspace(0, breakeven_total_tickets * 1.5, 100)
-    total_revenue = average_ticket_price * quantity
-    if breakeven_total_tickets != 0:
-        total_costs = (results['הוצאות משתנות'] + results['הוצאות קבועות'] + results['תשלומי הלוואה']) * quantity / breakeven_total_tickets
-    else:
-        total_costs = np.zeros_like(quantity)
-
-    breakeven_fig = go.Figure()
-    breakeven_fig.add_trace(go.Scatter(x=quantity, y=total_revenue, mode='lines', name='הכנסות', line=dict(color='#007bff')))
-    breakeven_fig.add_trace(go.Scatter(x=quantity, y=total_costs, mode='lines', name='הוצאות', line=dict(color='#dc3545')))
-    breakeven_fig.add_vline(x=breakeven_total_tickets, line_dash="dash", line_color="green",
-                            annotation_text=f"נקודת איזון: {locale.format_string('%.0f', breakeven_total_tickets, grouping=True)} כרטיסים לשנה",
-                            annotation_position="top right")
-    breakeven_fig.update_layout(title='גרף נקודת איזון', xaxis_title='מספר כרטיסים לשנה', yaxis_title='ש״ח',
-                                font=dict(size=14))
-
-    # גרף זרם מזומנים (Cash Flow)
-    cash_flow_fig = go.Figure()
-    years = list(range(1, default_params['אורך מימון (שנים)'] + 1))
-    cash_flow = [results['רווח לפני מס']] * default_params['אורך מימון (שנים)']
-    cash_flow.insert(0, -results['עלויות הקמה'])  # השקעה התחלתית
-    cumulative_cash_flow = np.cumsum(cash_flow)
-
-    cash_flow_fig.add_trace(go.Bar(x=["השקעה"] + [f"שנה {year}" for year in years], y=cash_flow, name='תזרים מזומנים', marker=dict(color='#28a745')))
-    cash_flow_fig.add_trace(
-        go.Scatter(x=["השקעה"] + [f"שנה {year}" for year in years], y=cumulative_cash_flow, mode='lines+markers',
-                   name='תזרים מזומנים מצטבר', line=dict(color='#007bff')))
-    cash_flow_fig.update_layout(title='תזרים מזומנים', xaxis_title='שנים', yaxis_title='ש״ח', font=dict(size=14))
-
-    # גרף שיעור רווחיות (Profit Margin)
-    profit_margin = (results['רווח לפני מס'] / results['הכנסות שנתיות']) * 100 if results['הכנסות שנתיות'] != 0 else 0
-    profit_margin_fig = go.Figure()
-    profit_margin_fig.add_trace(go.Indicator(
-        mode="gauge+number",
-        value=profit_margin,
-        title={'text': "שיעור רווחיות (%)"},
-        gauge={
-            'axis': {'range': [0, 100]},
-            'steps': [
-                {'range': [0, 20], 'color': "red"},
-                {'range': [20, 60], 'color': "yellow"},
-                {'range': [60, 100], 'color': "green"}
-            ],
-            'threshold': {'line': {'color': "black", 'width': 4}, 'thickness': 0.75, 'value': profit_margin}
-        }
-    ))
-    profit_margin_fig.update_layout(font=dict(size=14))
-
-    # גרף ניתוח רגישות
-    sensitivity_param_dropdown = st.selectbox("בחר פרמטר לניתוח רגישות:", options=list(default_params.keys()))
-    sensitivity_fig = st.plotly_chart(update_sensitivity_graph(sensitivity_param_dropdown, {'params': default_params}), use_container_width=True)
-
-    # ניתוח רגישות מתקדם (הצלבה בין פרמטרים)
-    advanced_sensitivity_layout = render_advanced_sensitivity_layout()
-
-    # הצגת הגרפים
-    st.plotly_chart(waterfall_fig, use_container_width=True)
-    st.plotly_chart(income_pie_fig, use_container_width=True)
-    st.plotly_chart(expense_pie_fig, use_container_width=True)
-    st.plotly_chart(breakeven_fig, use_container_width=True)
-    st.plotly_chart(cash_flow_fig, use_container_width=True)
-    st.plotly_chart(profit_margin_fig, use_container_width=True)
-    sensitivity_fig # Removed layout
-    advanced_sensitivity_layout
-
-
-# פונקציה לניתוח רגישות מתקדם (הצלבה בין פרמטרים)
-def perform_advanced_sensitivity_analysis(current_params, param1, param2, range1, range2):
-    profits = []
-    combinations = []
-    for val1 in range1:
-        for val2 in range2:
-            temp_params = current_params.copy()
-            temp_params[param1] = val1
-            temp_params[param2] = val2
-            try:
-                res = calculate_results(temp_params)
-                profits.append(res['רווח לפני מס'])
-                combinations.append((val1, val2))
-            except KeyError as e:
-                # אם יש פרמטר חסר, נמשיך בלי להוסיף
-                print(f"Missing key: {e}")
-                continue
-    return combinations, profits
-
-# פונקציה להצגת ניתוח רגישות מתקדם
-def render_advanced_sensitivity_layout():
-    sensitivity_params = [key for key in default_params.keys() if isinstance(default_params[key], (int, float))]
-
-    param1 = st.selectbox("בחר פרמטר 1 לניתוח רגישות:", options=sensitivity_params)
-    param2 = st.selectbox("בחר פרמטר 2 לניתוח רגישות:", options=sensitivity_params)
-
-    advanced_sensitivity_fig = st.plotly_chart(update_advanced_sensitivity_graph(param1, param2, {'params': default_params}), use_container_width=True)
-
-    advanced_sensitivity_info = st.container()
-    with advanced_sensitivity_info:
-        st.write("")  # Placeholder for sensitivity info
-
-
-    advanced_sensitivity_layout = st.container()
-    with advanced_sensitivity_layout:
-        param1
-        param2
-        advanced_sensitivity_fig
-        advanced_sensitivity_info
-
-    return advanced_sensitivity_layout
-
-
-# פונקציה לייצוא תוצאות לאקסל
-def generate_excel(results):
-    if not results:
-        return None
-
-    # יצירת DataFrame לתוצאות כלליות
-    general_data = pd.DataFrame([
-        {'מדד': key, 'ערך': value}
-        for key, value in results.items() if not isinstance(value, dict)
-    ])
-
-    # יצירת DataFrame להכנסות לפי קטגוריות
-    income_df = pd.DataFrame(list(results['הכנסות לפי קטגוריות'].items()), columns=['קטגוריה', 'סכום'])
-
-    # יצירת DataFrame להוצאות לפי קטגוריות
-    expense_df = pd.DataFrame(list(results['הוצאות לפי קטגוריות'].items()), columns=['קטגוריה', 'סכום'])
-
-    # כתיבת הנתונים לאקסל
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        general_data.to_excel(writer, sheet_name='תוצאות כלליות', index=False)
-        income_df.to_excel(writer, sheet_name='הכנסות לפי קטגוריות', index=False)
-        expense_df.to_excel(writer, sheet_name='הוצאות לפי קטגוריות', index=False)
-    output.seek(0)
-    return output
-
-# קולבק לניתוח רגישות חד-פרמטרי
-def update_sensitivity_graph(param, store_data):
-    if not store_data or 'params' not in store_data:
-        return {}
-    params = store_data['params']
-    if param not in params:
-        return {}
-    # טווח שינוי של +/- 20%
-    base_value = params.get(param, default_params.get(param, 1))
-    if base_value == 0:
-        param_values = np.array([0])
-    else:
-        param_values = np.linspace(base_value * 0.8, base_value * 1.2, 10)
-    profits = []
-    for val in param_values:
-        temp_params = params.copy()
-        temp_params[param] = val
-        try:
-            res = calculate_results(temp_params)
-            profits.append(res['רווח לפני מס'])
-        except KeyError as e:
-            # אם יש פרמטר חסר, נמשיך בלי להוסיף
-            print(f"Missing key: {e}")
-            profits.append(0)
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=param_values, y=profits, mode='lines+markers', name='רווח לפני מס'))
-    fig.update_layout(
-        title=f'ניתוח רגישות - {param}',
-        xaxis_title=f"{param} (ש״ח)" if 'עלות' in param or 'מחיר' in param else param,
-        yaxis_title='רווח לפני מס (ש״ח)',
-        font=dict(size=14),
-        hovermode="x unified"
-    )
-    return fig
-
-# קולבק לניתוח רגישות מתקדם (הצלבה בין פרמטרים)
-def update_advanced_sensitivity_graph(param1, param2, store_data):
-    if not store_data or 'params' not in store_data:
-        return {}
-    params = store_data['params']
-    if not param1 or not param2:
-        return {}
-    # טווח שינוי של +/- 20% לכל פרמטר
-    base_value1 = params.get(param1, default_params.get(param1, 1))
-    base_value2 = params.get(param2, default_params.get(param2, 1))
-    if base_value1 == 0:
-        param1_values = np.array([0])
-    else:
-        param1_values = np.linspace(base_value1 * 0.8, base_value1 * 1.2, 10)
-    if base_value2 == 0:
-        param2_values = np.array([0])
-    else:
-        param2_values = np.linspace(base_value2 * 0.8, base_value2 * 1.2, 10)
-    combinations, profits = perform_advanced_sensitivity_analysis(params, param1, param2, param1_values, param2_values)
-
-    if not combinations:
-        return {}
-
-    # יצירת DataFrame
-    df = pd.DataFrame(combinations, columns=[param1, param2])
-    df['רווח לפני מס'] = profits
-
-    # יצירת heatmap
-    fig = px.density_heatmap(
-        df,
-        x=param1,
-        y=param2,
-        z='רווח לפני מס',
-        color_continuous_scale='Viridis',
-        title=f'ניתוח רגישות מתקדם - {param1} מול {param2}',
-        labels={param1: param1, param2: param2, 'רווח לפני מס': 'רווח לפני מס (ש״ח)'},
-        nbinsx=10,
-        nbinsy=10
-    )
-    fig.update_layout(font=dict(size=14))
-    return fig
-
-# קולבק להצגת מידע על ניתוח רגישות מתקדם
-def display_sensitivity_info(clickData):
-    if clickData is None:
-        return ""
-    param1_value = clickData['points'][0]['x']
-    param2_value = clickData['points'][0]['y']
-    profit = clickData['points'][0]['z']
-    return f"רווח לפני מס: {locale.format_string('%.2f', profit, grouping=True)} ש״ח"
 
 # פריסת האפליקציה (מותאם ל-Streamlit)
 if 'results' not in st.session_state:
