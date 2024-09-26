@@ -16,6 +16,7 @@ except locale.Error:
 # כותרת האפליקציה
 st.title("מחשבון תוכנית עסקית לג'ימבורי יובל המבולבל")
 
+st.markdown("""
 <style>
     /* סגנון כללי */
     body {
@@ -31,20 +32,20 @@ st.title("מחשבון תוכנית עסקית לג'ימבורי יובל המב
     h1, h2, h3 {
         font-weight: bold;
         text-align: center; /* מרכז כותרות */
-        margin-bottom: 1rem;
+        margin-bottom: 16px; /* שונה מ-1rem */
     }
 
     h1 {
-        font-size: 2.5rem;
-        margin-top: 2rem;
+        font-size: 40px;  /* שונה מ-2.5rem */
+        margin-top: 32px; /* שונה מ-2rem */
     }
 
     h2 {
-        font-size: 2rem;
+        font-size: 32px;  /* שונה מ-2rem */
     }
 
     h3 {
-        font-size: 1.5rem;
+        font-size: 24px;  /* שונה מ-1.5rem */
     }
 
     /* כפתורים */
@@ -52,7 +53,7 @@ st.title("מחשבון תוכנית עסקית לג'ימבורי יובל המב
         background-color: #007bff; /* צבע כחול בהיר */
         color: #fff; /* צבע טקסט לבן */
         border: none;
-        padding: 1rem 2rem;
+        padding: 16px 32px; /* שונה מ-1rem 2rem */
         border-radius: 5px;
         font-weight: bold;
         cursor: pointer;
@@ -67,12 +68,12 @@ st.title("מחשבון תוכנית עסקית לג'ימבורי יובל המב
     table {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 2rem;
+        margin-bottom: 32px; /* שונה מ-2rem */
         box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* צל רך לטבלאות */
     }
 
     th, td {
-        padding: 1rem;
+        padding: 16px; /* שונה מ-1rem */
         text-align: right;
         border-bottom: 1px solid #ddd;
     }
@@ -91,22 +92,22 @@ st.title("מחשבון תוכנית עסקית לג'ימבורי יובל המב
     /* ניתוח רגישות מתקדם */
     #advanced-sensitivity-info {
         text-align: center;
-        font-size: 1.2rem;
+        font-size: 19.2px; /* שונה מ-1.2rem */
         font-weight: bold;
     }
 
     /* רספונסיביות */
     @media (max-width: 768px) { /* התאמות לעיצוב עבור מסכי מובייל */
         h1 {
-            font-size: 2rem;
+            font-size: 32px;  /* שונה מ-2rem */
         }
 
         h2 {
-            font-size: 1.5rem;
+            font-size: 24px;  /* שונה מ-1.5rem */
         }
 
         h3 {
-            font-size: 1.2rem;
+            font-size: 19.2px;  /* שונה מ-1.2rem */
         }
 
         .plotly-graph-div {
@@ -114,11 +115,11 @@ st.title("מחשבון תוכנית עסקית לג'ימבורי יובל המב
         }
 
         .accordion { /* התאמות לעיצוב אקורדיון במובייל */
-            margin-bottom: 2rem;
+            margin-bottom: 32px; /* שונה מ-2rem */
         }
 
         .accordion-item {
-            margin-bottom: 1rem;
+            margin-bottom: 16px; /* שונה מ-1rem */
         }
     }
 </style>
